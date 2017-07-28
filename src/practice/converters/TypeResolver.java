@@ -4,6 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 interface TypeResolver{
-     Class read(DataInputStream reader);
-     void write(DataOutputStream writer, Class cls);
+     Class read(BinaryReader reader);
+     void write(BinaryWriter writer, Class cls);
 }

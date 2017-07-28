@@ -1,9 +1,6 @@
 package practice.converters;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +20,7 @@ class Convert{
             converters.add(new Int32Converter());
             converters.add(new StringConverter());
             converters.add(new DoubleConverter());
+            converters.add(new ArrayConverter());
             converters.add(new ObjectConverter());
         }
 
@@ -32,22 +30,27 @@ class Convert{
     }
 
 
-    public void write(DataOutputStream writer, Class cls, Object obj){
+    public void write(BinaryWriter writer, Class cls, Object obj){
         Converter converter = getConverter(cls);
         if(converter==null){
             throw new ConverterException("不支持的类型");
         }
+        typeResolver.write(writer,cls);
         converter.write(writer,obj,cls,this);
     }
 
-    public Object read(DataInputStream reader, Class cls){
+
+    public Object read(BinaryReader reader){
+
+        Class cls = typeResolver.read(reader);
+        if(cls==null){
+            throw new ConverterException("can not read class");
+        }
         Converter converter = getConverter(cls);
         if(converter==null){
-            throw new ConverterException();
+            throw new ConverterException("no converter");
         }
-
         return converter.read(reader,cls,this);
-
     }
 
     private Converter getConverter(Class cls){
@@ -59,17 +62,27 @@ class Convert{
         return null;
     }
 
+    public void write(OutputStream out,Class cls,Object obj){
+        BinaryWriter writer = new BinaryWriter(out,true);
+        write(writer,cls,obj);
+        writer.flush();
+    }
+
     public byte[] getBytes(Class cls,Object obj){
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DataOutputStream writer = new DataOutputStream(out);
-        write(writer,cls,obj);
+        write(out,cls,obj);
         return out.toByteArray();
     }
 
-    public Object getValue(Class cls,byte[] bytes){
+
+    public Object read(InputStream in){
+        BinaryReader reader = new BinaryReader(in,true);
+        return read(reader);
+    }
+
+    public Object getValue(byte[] bytes){
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-        DataInputStream reader = new DataInputStream(in);
-        return read(reader,cls);
+        return read(in);
     }
 
 }

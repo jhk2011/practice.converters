@@ -1,16 +1,26 @@
 package practice.converters;
 
 class Person{
-    public int getAge() {
-        return age;
+
+    public int getId() {
+        return id;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    int age;
+    int id;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    String name;
     public double getGrade() {
         return grade;
     }
@@ -20,4 +30,17 @@ class Person{
     }
 
     double grade;
+
+    public String[] getCourses() {
+        return courses;
+    }
+
+    public void setCourses(String[] courses) {
+        this.courses = courses;
+    }
+
+    String[] courses;
+
 }
+
+

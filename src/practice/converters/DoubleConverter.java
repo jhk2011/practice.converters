@@ -3,13 +3,13 @@ package practice.converters;
 public class DoubleConverter extends Converter<Double> {
     @Override
     public boolean canConvert(Class c) {
-        return Double.class==c||double.class==c;
+        return Double.class == c || double.class == c;
     }
 
     @Override
     protected byte[] getBytes(Double obj, Class c, Convert convert) {
 
-        long value=Double.doubleToRawLongBits(obj);
+        long value = Double.doubleToRawLongBits(obj);
 
         byte[] bytes = new byte[8];
         for (int i = 0; i < 8; i++) {

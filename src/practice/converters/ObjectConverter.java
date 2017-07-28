@@ -1,59 +1,55 @@
 package practice.converters;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
-class  ObjectConverter extends  Converter<Object>{
+class ObjectConverter extends Converter<Object> {
 
     @Override
     public boolean canConvert(Class c) {
 
         System.out.println(c.getName());
 
-        if(c.isPrimitive())return false;
-        if(c.isAnnotation())return false;
-        if(c.isInterface())return false;
-        if(Modifier.isAbstract(c.getModifiers()))return false;
+        if (c.isPrimitive()) return false;
+        if (c.isAnnotation()) return false;
+        if (c.isInterface()) return false;
+        if (Modifier.isAbstract(c.getModifiers())) return false;
 
         Constructor[] constructors = c.getConstructors();
 
-        if(constructors.length==0)return true;
+        if (constructors.length == 0) return true;
 
-        for (Constructor constructor:
+        for (Constructor constructor :
                 constructors) {
-            if(constructor.getParameterCount()==0){
+            if (constructor.getParameterCount() == 0) {
                 return true;
             }
         }
         return false;
     }
 
+
     @Override
-    public void write(DataOutputStream writer, Object obj, Class c, Convert convert)  {
+    public void writeObject(BinaryWriter writer, Object obj, Class c, Convert convert) {
 
         ArrayList<Method> getters = new ArrayList<Method>();
 
-        for(Method method:c.getMethods()){
+        for (Method method : c.getMethods()) {
             String name = method.getName();
-            if(method.getDeclaringClass()==c){
-            if(name.startsWith("get")&& method.getParameterCount()==0){
-                getters.add(method);
-            }}
+            if (method.getDeclaringClass() == c) {
+                if (name.startsWith("get") && method.getParameterCount() == 0) {
+                    getters.add(method);
+                }
+            }
         }
 
-        try {
-            writer.writeInt(getters.size());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        writer.writeInt(getters.size());
 
-        for (Method method:getters) {
+        for (Method method : getters) {
 
             String name = method.getName();
 
@@ -63,79 +59,93 @@ class  ObjectConverter extends  Converter<Object>{
 
             name = name.substring(3, name.length());
 
-            convert.write(writer, String.class, name);
+            // convert.write(writer, String.class, name);
 
-            try {
+            writer.writeStringSection(name);
 
-                Object value = method.invoke(obj);
+            Object value = getValue(obj, method);
 
 
-                convert.write(writer, cls, value);
+            convert.write(writer, cls, value);
+        }
+    }
 
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                throw new ConverterException();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-                throw new ConverterException();
-            }
+
+    private Object getValue(Object obj, Method method) {
+        try {
+
+            Object value = method.invoke(obj);
+
+            return value;
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new ConverterException("can not get property", e);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            throw new ConverterException("can not get property", e);
         }
     }
 
     @Override
-    public Object read(DataInputStream reader, Class c, Convert convert) {
+    public Object readObject(BinaryReader reader, Class c, Convert convert) {
 
-        try {
-            Object obj = c.newInstance();
+        Object obj = createObject(c);
 
-            ArrayList<Method> setters = new ArrayList<Method>();
+        ArrayList<Method> setters = new ArrayList<Method>();
 
-            for(Method method:c.getMethods()){
+        for (Method method : c.getMethods()) {
 
-                String name =method.getName();
+            String name = method.getName();
 
-                if(name.startsWith("set")&& method.getParameterCount()==1){
-                    setters.add(method);
-                }
+            if (name.startsWith("set") && method.getParameterCount() == 1) {
+                setters.add(method);
             }
-
-            try {
-                int count = reader.readInt();
-
-
-                for (int i=0;i<count;i++) {
-
-                    String name = (String) convert.read(reader, String.class);
-
-                    for (Method method:setters){
-
-                        if(method.getName().equals("set"+name)){
-                            Class cls = method.getParameterTypes()[0];
-                            Object value = convert.read(reader,cls);
-
-                            try {
-                                method.invoke(obj,value);
-                            } catch (InvocationTargetException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                }
-
-                return obj;
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
 
-        return null;
+        int count = reader.readInt();
+
+
+        for (int i = 0; i < count; i++) {
+
+            String name = reader.readStringSection();
+            Object value = convert.read(reader);
+
+            for (Method method : setters) {
+
+                if (method.getName().equals("set" + name)) {
+                    setValue(method, obj, value);
+                }
+            }
+
+        }
+
+        return obj;
+
+    }
+
+    private void setValue(Method method, Object obj, Object value) {
+        try {
+            method.invoke(obj, value);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            throw new ConverterException("can not set property", e);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new ConverterException("can not set property", e);
+        }
+    }
+
+    private Object createObject(Class cls) {
+        try {
+            Object obj = cls.newInstance();
+            return obj;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            throw new ConverterException("can not set property", e);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new ConverterException("can not set property", e);
+        }
     }
 }

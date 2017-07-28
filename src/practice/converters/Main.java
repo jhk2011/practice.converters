@@ -1,40 +1,60 @@
 package practice.converters;
 
+import com.sun.org.apache.bcel.internal.generic.ARRAYLENGTH;
+
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
-	   Class cls= String.class;
+    public static void main(String[] args) throws IOException {
 
 
-	   int value = 1234;
+        Class<int[]> cls=int[].class;
+
+        //cls.getComponentType()
+
+        System.out.println(cls);
+
+        int value = 1234;
+
+        TypeIdTypeResolver resover = new TypeIdTypeResolver();
+
+        resover.addPrimitive();
+        resover.add(Person.class,100);
+
+        Convert convert = new Convert(resover, null);
 
 
+        byte[] bytes1 = convert.getBytes(Integer.class, value);
 
-	   Convert convert = new Convert(null,null);
+        Integer value2 = (Integer) convert.getValue(bytes1);
 
 
-	  byte[] bytes= convert.getBytes(Integer.class,value);
+        Person p = new Person();
 
-	  Integer value2 = (Integer) convert.getValue(Integer.class,bytes);
+        p.setGrade(3.14);
+        p.setName("test");
+        p.setId(1);
+        p.setCourses(new String[]{"语文","英语"});
 
-	  Person p = new Person();
 
-	  p.setGrade(200.25);
+        FileOutputStream out = new FileOutputStream("f:/personj.dat");
 
-	  p.setAge(45);
+        convert.write(out,Person.class,p);
 
-	  bytes = convert.getBytes(Person.class,p);
+        out.close();
 
-	  Person p2 = (Person)convert.getValue(Person.class,bytes);
+        FileInputStream in = new FileInputStream("f:/person.dat");
 
-	  System.out.println(p2.getAge());
-	  System.out.println(p2.getGrade());
+
+        Person p2 = (Person) convert.read(in);
+
+        in.close();
+
+        System.out.println(p2.getId());
+        System.out.println(p2.getGrade());
+        System.out.println(p2.getName());
     }
 }
 

@@ -8,14 +8,12 @@ import java.io.UnsupportedEncodingException;
 class DefaultTypeResolver implements TypeResolver {
 
     @Override
-    public Class read(DataInputStream reader) {
+    public Class read(BinaryReader reader) {
 
         try {
             int size = reader.readInt();
 
-            byte[] bytes = new byte[size];
-
-            reader.read(bytes);
+            byte[] bytes = reader.readBytes(size);
 
             String name = new String(bytes,"utf8");
 
@@ -34,19 +32,17 @@ class DefaultTypeResolver implements TypeResolver {
     }
 
     @Override
-    public void write(DataOutputStream writer, Class cls) {
+    public void write(BinaryWriter writer, Class cls) {
         String name = cls.getName();
         try {
             byte[] bytes=name.getBytes("utf8");
 
             writer.writeInt(bytes.length);
-            writer.write(bytes);
+            writer.writeBytes(bytes);
 
             return;
 
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }catch (IOException e) {
             e.printStackTrace();
         }
         throw new ConverterException("write type error");

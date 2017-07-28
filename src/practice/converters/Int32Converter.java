@@ -5,7 +5,7 @@ class Int32Converter extends Converter<Integer>{
     @Override
     public boolean canConvert(Class c) {
 
-        return c==Integer.class||c==int.class;
+        return c==Integer.class || c==int.class;
     }
 
     @Override
@@ -28,29 +28,10 @@ class Int32Converter extends Converter<Integer>{
     @Override
     protected Integer getValue(byte[] bytes, Class c, Convert convert) {
 
+        if(bytes==null||bytes.length!=4)throw  new ConverterException("int must be 4 bytes");
+
         int value = ((bytes[0]&0xFF)<<0)+(bytes[1]<<8)+(bytes[2]<<16)+(bytes[3]<<24);
 
         return value;
     }
-/*
-    @Override
-    public void write(DataOutputStream writer, Integer obj, Class cls, Convert convert) {
-        try {
-            writer.writeInt(obj);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ConverterException();
-        }
-    }
-
-    @Override
-    public Integer read(DataInputStream reader, Class cls, Convert convert) {
-        try {
-            return reader.readInt();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ConverterException();
-        }
-    }
-*/
 }
