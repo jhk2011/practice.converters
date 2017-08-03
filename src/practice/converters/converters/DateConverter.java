@@ -12,7 +12,7 @@ public class DateConverter extends Converter<Date> {
     @Override
     public boolean canConvert(Class c) {
 
-        return c==Date.class;
+        return c == Date.class;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class DateConverter extends Converter<Date> {
     @Override
     protected Date readObject(BinaryReader reader, Class c, Convert convert) {
         long millseconds = reader.readLong();
-        Calendar calendar=Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millseconds);
         return calendar.getTime();
     }

@@ -1,13 +1,13 @@
 package practice.converters;
 
-import practice.converters.typemaps.*;
+import practice.converters.typemaps.SimpleTypeMap;
 
 import java.io.*;
 import java.util.*;
 
 public class Main {
 
-    static void test(){
+    static void test() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         BinaryWriter writer = new BinaryWriter(out);
@@ -26,7 +26,7 @@ public class Main {
 
     }
 
-    public static void testgereric(){
+    public static void testgereric() {
 /*
             Student st=new Student();
             Class clazz=st.getClass();
@@ -49,7 +49,7 @@ public class Main {
         //testgereric();
 
 
-        Date date =new Date(System.currentTimeMillis());
+        Date date = new Date(System.currentTimeMillis());
 
         Calendar.getInstance().getTimeInMillis();
 
@@ -57,14 +57,14 @@ public class Main {
 
         Calendar calendar = Calendar.getInstance();
 
-        date= calendar.getTime();
+        date = calendar.getTime();
 
 
         TypeNameTypeResolver typeNameResolver = new TypeNameTypeResolver();
 
-        typeNameResolver.add(new SimpleTypeMap(Person.class,"person"));
+        typeNameResolver.add(new SimpleTypeMap(Person.class, "person"));
 
-        typeNameResolver.add(new SimpleTypeMap(Gender.class,"gender"));
+        typeNameResolver.add(new SimpleTypeMap(Gender.class, "gender"));
 
 
         Convert convert = new Convert(typeNameResolver, null);
@@ -83,10 +83,10 @@ public class Main {
         p.setGrade(3.14);
         p.setName("test");
         p.setId(1);
-        p.setCourses(new Object[]{"语文","英语",123});
+        p.setCourses(new Object[]{"语文", "英语", 123});
         p.setMatrix(new int[][]{
-                {1,2,3},
-                {4,5,6}
+                {1, 2, 3},
+                {4, 5, 6}
         });
 
         List<String> list = new ArrayList<>();
@@ -98,7 +98,7 @@ public class Main {
         p.setDate(new Date());
         p.setGuid(UUID.randomUUID());
 
-        p.setIntegers(new Integer[]{1,2,3});
+        p.setIntegers(new Integer[]{1, 2, 3});
 
         Object obj = null;
 
@@ -108,30 +108,27 @@ public class Main {
 
         FileOutputStream out = new FileOutputStream("f:/personj.dat");
 
-        convert.write(out,obj);
+        convert.write(out, obj);
 
         out.close();
 
         System.out.println("---");
 
-        FileInputStream in = new FileInputStream("f:/personj.dat");
+        FileInputStream in = new FileInputStream("f:/person.dat");
 
         Object obj2 = convert.read(in);
 
         System.out.println(obj2.getClass().getName());
 
-        Person person2 = (Person)obj2;
+        Person person2 = (Person) obj2;
 
         System.out.println(person2.getGuid());
         System.out.println(person2.getDate());
 
+       Object s= person2.getValues().get("2");
+
         in.close();
 
-        Integer i = null;
-
-        int ii=i;
-
-        System.out.println(ii);
     }
 }
 

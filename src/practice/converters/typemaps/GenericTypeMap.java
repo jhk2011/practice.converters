@@ -2,14 +2,14 @@ package practice.converters.typemaps;
 
 import practice.converters.ConverterException;
 
-public class GenericTypeMap implements  TypeNameMap{
+public class GenericTypeMap implements TypeNameMap {
 
     TypeMap typeMap;
 
     Class genericType;
     String genericName;
 
-    public  GenericTypeMap(TypeMap typeMap,Class genericType,String genericName){
+    public GenericTypeMap(TypeMap typeMap, Class genericType, String genericName) {
         this.typeMap = typeMap;
         this.genericType = genericType;
         this.genericName = genericName;
@@ -19,17 +19,17 @@ public class GenericTypeMap implements  TypeNameMap{
     @Override
     public boolean canGetType(String name) {
 
-        if(!name.endsWith(">"))return false;
+        if (!name.endsWith(">")) return false;
 
         int index = name.indexOf("<");
 
-        if(index<0)throw new ConverterException("name is not generic type");
+        if (index < 0) throw new ConverterException("name is not generic type");
 
-        String genericName = name.substring(0,index);
+        String genericName = name.substring(0, index);
 
-        String[] genericArgumentNames =name.substring(index+1,name.length()-1).split(",") ;
+        String[] genericArgumentNames = name.substring(index + 1, name.length() - 1).split(",");
 
-        return canGetGenericType(genericName,genericArgumentNames);
+        return canGetGenericType(genericName, genericArgumentNames);
     }
 
     @Override
@@ -37,23 +37,24 @@ public class GenericTypeMap implements  TypeNameMap{
 
         Class genericType = getGenericType(type);
         Class[] genericArgumentsTypes = getGenericArgumentTypes(type);
-        return canGetGenericName(type,genericArgumentsTypes);
+        return canGetGenericName(type, genericArgumentsTypes);
     }
 
     @Override
     public Class getType(String name) {
 
         int index = name.indexOf("<");
-        String genericName = name.substring(0,index);
-        String[] genericArgumentNames = name.substring(index+1,name.length()-1).split(",");
+        String genericName = name.substring(0, index);
+        String[] genericArgumentNames = name.substring(index + 1, name.length() - 1).split(",");
 
-        return getGenericType(genericName,genericArgumentNames);
+        return getGenericType(genericName, genericArgumentNames);
     }
+
     @Override
     public String getName(Class type) {
         Class genericType = getGenericType(type);
         Class[] genericArgumentsTypes = getGenericArgumentTypes(type);
-        return getGenericName(type,genericArgumentsTypes);
+        return getGenericName(type, genericArgumentsTypes);
     }
 
     protected Class getGenericType(Class type) {
@@ -78,22 +79,22 @@ public class GenericTypeMap implements  TypeNameMap{
 
     protected String getGenericName(Class type, Class[] genericArgumentsTypes) {
 
-        if(genericArgumentsTypes==null ||genericArgumentsTypes.length==0){
+        if (genericArgumentsTypes == null || genericArgumentsTypes.length == 0) {
             return genericName;
         }
 
         String[] genericArgumentNames = new String[genericArgumentsTypes.length];
 
-        for (int i=0;i<genericArgumentsTypes.length;i++){
+        for (int i = 0; i < genericArgumentsTypes.length; i++) {
             String genericArgumentName = typeMap.getName(genericArgumentsTypes[i]);
-            if(genericArgumentName==null) {
+            if (genericArgumentName == null) {
                 throw new ConverterException("can not get name of type:" +
                         genericArgumentsTypes[i].getName());
             }
-            genericArgumentNames[i]=genericArgumentName;
+            genericArgumentNames[i] = genericArgumentName;
         }
 
-        return String.format("%s<%s>", genericName, String.join(",",genericArgumentNames));
+        return String.format("%s<%s>", genericName, String.join(",", genericArgumentNames));
     }
 
 }

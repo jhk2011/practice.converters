@@ -1,7 +1,7 @@
 package practice.converters;
 
-public class ConverterException extends RuntimeException{
-    public  ConverterException(){
+public class ConverterException extends RuntimeException {
+    public ConverterException() {
 
     }
 

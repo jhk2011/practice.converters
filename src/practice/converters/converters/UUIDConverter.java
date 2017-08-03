@@ -10,13 +10,12 @@ import java.util.UUID;
 public class UUIDConverter extends Converter<UUID> {
     @Override
     public boolean canConvert(Class c) {
-        return UUID.class == c ;
+        return UUID.class == c;
     }
 
     @Override
-    protected void writeObject(BinaryWriter writer, UUID obj, Class c, Convert convert)
-    {
-       writer.writeUUID(obj);
+    protected void writeObject(BinaryWriter writer, UUID obj, Class c, Convert convert) {
+        writer.writeUUID(obj);
     }
 
     @Override

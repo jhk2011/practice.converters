@@ -1,6 +1,7 @@
 package practice.converters;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 public abstract class Converter<T> {
 
@@ -24,7 +25,7 @@ public abstract class Converter<T> {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         BinaryWriter writer = new BinaryWriter(out);
 
-        System.out.println("write object:"+c.getName());
+        System.out.println("write object:" + c.getName());
 
         writeObject(writer, obj, c, convert);
         writer.flush();
@@ -51,12 +52,12 @@ public abstract class Converter<T> {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         BinaryReader reader = new BinaryReader(in);
 
-        System.out.println("read object:"+c.getName());
+        System.out.println("read object:" + c.getName());
 
         return readObject(reader, c, convert);
     }
 
     protected T readObject(BinaryReader reader, Class c, Convert convert) {
-        throw  new ConverterException("not implement");
+        throw new ConverterException("not implement");
     }
 }

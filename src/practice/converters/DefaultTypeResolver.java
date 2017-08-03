@@ -13,7 +13,7 @@ public class DefaultTypeResolver implements TypeResolver {
 
             byte[] bytes = reader.readBytes(size);
 
-            String name = new String(bytes,"utf8");
+            String name = new String(bytes, "utf8");
 
             try {
                 return Class.forName(name);
@@ -26,14 +26,14 @@ public class DefaultTypeResolver implements TypeResolver {
             e.printStackTrace();
         }
 
-        throw  new ConverterException("read type error");
+        throw new ConverterException("read type error");
     }
 
     @Override
     public void write(BinaryWriter writer, Class cls) {
         String name = cls.getName();
         try {
-            byte[] bytes=name.getBytes("utf8");
+            byte[] bytes = name.getBytes("utf8");
 
             writer.writeInt(bytes.length);
             writer.writeBytes(bytes);

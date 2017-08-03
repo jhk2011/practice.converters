@@ -10,7 +10,7 @@ public class ByteConverter extends Converter<Byte> {
     @Override
     public boolean canConvert(Class c) {
 
-        return c==Byte.class || c==byte.class;
+        return c == Byte.class || c == byte.class;
     }
 
     @Override
@@ -19,8 +19,7 @@ public class ByteConverter extends Converter<Byte> {
     }
 
     @Override
-    protected Byte readObject(BinaryReader reader, Class c, Convert convert)
-    {
+    protected Byte readObject(BinaryReader reader, Class c, Convert convert) {
         return reader.readByte();
     }
 }

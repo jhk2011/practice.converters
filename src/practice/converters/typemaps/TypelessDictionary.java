@@ -1,30 +1,30 @@
 package practice.converters.typemaps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class TypelessArrayMap implements TypeNameMap {
+public class TypelessDictionary  implements TypeNameMap {
 
     @Override
     public boolean canGetType(String name) {
 
-        return name.equals("array");
+        return name.equals("dictionary");
     }
 
     @Override
     public boolean canGetName(Class type) {
-
-        return type.isArray();
+        return type == Map.class || type == HashMap.class;
     }
 
     @Override
     public Class getType(String name) {
-
-        return Object[].class;
+        return HashMap.class;
     }
 
     @Override
     public String getName(Class type) {
-        return "array";
+        return "dictionary";
     }
 }

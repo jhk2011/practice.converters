@@ -4,12 +4,12 @@ import practice.converters.ConverterException;
 
 import java.lang.reflect.Array;
 
-class ArrayMap implements  TypeNameMap{
+class ArrayMap implements TypeNameMap {
 
     TypeMap typeMap;
 
-    public ArrayMap(TypeMap typeMap){
-        this.typeMap=typeMap;
+    public ArrayMap(TypeMap typeMap) {
+        this.typeMap = typeMap;
     }
 
     @Override
@@ -24,21 +24,21 @@ class ArrayMap implements  TypeNameMap{
 
     @Override
     public Class getType(String name) {
-        String elementName = name.substring(0,name.length()-2);
+        String elementName = name.substring(0, name.length() - 2);
         Class elementType = typeMap.getType(elementName);
-        if(elementType==null){
-            throw new ConverterException("can not get type of:"+elementName);
+        if (elementType == null) {
+            throw new ConverterException("can not get type of:" + elementName);
         }
-        return Array.newInstance(elementType,0).getClass();
+        return Array.newInstance(elementType, 0).getClass();
     }
 
     @Override
     public String getName(Class type) {
-        Class elementType =type.getComponentType();
+        Class elementType = type.getComponentType();
         String elementName = typeMap.getName(elementType);
-        if(elementName==null){
-            throw new ConverterException("can not get name of type:"+elementType.getName());
+        if (elementName == null) {
+            throw new ConverterException("can not get name of type:" + elementType.getName());
         }
-        return elementName+"[]";
+        return elementName + "[]";
     }
 }

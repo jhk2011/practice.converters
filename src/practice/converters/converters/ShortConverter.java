@@ -1,16 +1,16 @@
 package practice.converters.converters;
 
-import practice.converters.BinaryWriter;
-import practice.converters.Converter;
 import practice.converters.BinaryReader;
+import practice.converters.BinaryWriter;
 import practice.converters.Convert;
+import practice.converters.Converter;
 
 public class ShortConverter extends Converter<Short> {
 
     @Override
     public boolean canConvert(Class c) {
 
-        return c==Short.class || c==short.class;
+        return c == Short.class || c == short.class;
     }
 
     @Override

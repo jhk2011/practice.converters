@@ -12,7 +12,7 @@ public class ListConverter extends Converter<List> {
 
     @Override
     public boolean canConvert(Class c) {
-        return  c==List.class || c == ArrayList.class;
+        return c == List.class || c == ArrayList.class;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class ListConverter extends Converter<List> {
         writer.writeInt(size);
         for (int i = 0; i < size; i++) {
             Object item = obj.get(i);
-            convert.write(writer,item==null?Object.class :item.getClass(),item);
+            convert.write(writer, item == null ? Object.class : item.getClass(), item);
         }
     }
 
@@ -31,7 +31,7 @@ public class ListConverter extends Converter<List> {
         List obj = new ArrayList(size);
         for (int i = 0; i < size; i++) {
             Object item = convert.read(reader);
-            obj.add(i,item);
+            obj.add(i, item);
         }
         return obj;
     }

@@ -10,7 +10,7 @@ public class FloatConverter extends Converter<Float> {
     @Override
     public boolean canConvert(Class c) {
 
-        return c==Float.class || c==float.class;
+        return c == Float.class || c == float.class;
     }
 
     @Override

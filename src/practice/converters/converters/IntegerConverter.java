@@ -10,7 +10,7 @@ public class IntegerConverter extends Converter<Integer> {
     @Override
     public boolean canConvert(Class c) {
 
-        return c==Integer.class || c==int.class;
+        return c == Integer.class || c == int.class;
     }
 
     @Override

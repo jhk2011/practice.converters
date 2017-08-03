@@ -2,16 +2,16 @@ package practice.converters.converters;
 
 import practice.converters.*;
 
-public class  EnumConverter extends Converter<Enum> {
+public class EnumConverter extends Converter<Enum> {
 
     @Override
     public boolean canConvert(Class c) {
-        return c.getSuperclass()==Enum.class;
+        return c.getSuperclass() == Enum.class;
     }
 
     @Override
     protected void writeObject(BinaryWriter writer, Enum obj, Class c, Convert convert) {
-       writer.writeInt(obj.ordinal());
+        writer.writeInt(obj.ordinal());
     }
 
     @Override
@@ -19,12 +19,12 @@ public class  EnumConverter extends Converter<Enum> {
 
         int value = reader.readInt();
 
-       for (Object e:c.getEnumConstants()){
-           Enum ee = (Enum)e;
-           if(ee.ordinal()==value){
-               return ee;
-           }
-       }
-       throw new ConverterException("enum value does not exist");
+        for (Object e : c.getEnumConstants()) {
+            Enum ee = (Enum) e;
+            if (ee.ordinal() == value) {
+                return ee;
+            }
+        }
+        throw new ConverterException("enum value does not exist");
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 public class TypeConvert {
     List<TypeConverter> converters = new ArrayList<>();
 
-    public TypeConvert(){
+    public TypeConvert() {
         //practice.converters.add(new PrimitiveConverter());
         converters.add(new PrimitiveArrayConverter());
     }

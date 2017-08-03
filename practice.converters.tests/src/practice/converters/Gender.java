@@ -1,6 +1,6 @@
 package practice.converters;
 
-public enum  Gender{
-MALE,
-FEMALE
+public enum Gender {
+    MALE,
+    FEMALE
 }

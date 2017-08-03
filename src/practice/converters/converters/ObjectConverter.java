@@ -63,7 +63,7 @@ public class ObjectConverter extends Converter<Object> {
             Object value = getValue(obj, method);
 
 
-            convert.write(writer, cls, value);
+            convert.write(writer, value==null? cls:value.getClass(), value);
         }
     }
 
@@ -107,7 +107,7 @@ public class ObjectConverter extends Converter<Object> {
 
             String name = reader.readStringSection();
 
-            System.out.println("set type " + c.getName() +" property "+name);
+            System.out.println("set type " + c.getName() + " property " + name);
 
             Object value = convert.read(reader);
 
@@ -118,8 +118,8 @@ public class ObjectConverter extends Converter<Object> {
 
                     Class type = method.getParameterTypes()[0];
 
-                    if(value!=null&&!type.isInstance(value)){
-                        value = convert.getTypeConvert().convert(type,value);
+                    if (value != null && !type.isInstance(value)) {
+                        value = convert.getTypeConvert().convert(type, value);
                     }
 
                     setValue(method, obj, value);

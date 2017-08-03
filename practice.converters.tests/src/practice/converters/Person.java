@@ -1,10 +1,11 @@
 package practice.converters;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class Person{
+public class Person {
 
     public int getId() {
         return id;
@@ -96,6 +97,16 @@ public class Person{
     }
 
     Integer[] integers;
+
+    public HashMap<String, Object> getValues() {
+        return values;
+    }
+
+    public void setValues(HashMap<String, Object> values) {
+        this.values = values;
+    }
+
+    HashMap<String,Object> values;
 }
 
 

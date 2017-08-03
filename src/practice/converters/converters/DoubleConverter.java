@@ -14,7 +14,7 @@ public class DoubleConverter extends Converter<Double> {
 
     @Override
     protected void writeObject(BinaryWriter writer, Double obj, Class c, Convert convert) {
-       writer.writeDouble(obj);
+        writer.writeDouble(obj);
     }
 
     @Override

@@ -1,26 +1,28 @@
 package practice.converters;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-public class BinaryWriter implements  AutoCloseable {
+public class BinaryWriter implements AutoCloseable {
 
     OutputStream out;
     boolean leaveOpen;
 
-    public BinaryWriter(OutputStream out,boolean leaveOpen) {
+    public BinaryWriter(OutputStream out, boolean leaveOpen) {
         this.out = out;
         this.leaveOpen = leaveOpen;
     }
 
     public BinaryWriter(OutputStream out) {
-       this(out,false);
+        this(out, false);
     }
 
     public void writeBytes(byte[] bytes) {
 
         try {
-             out.write(bytes);
+            out.write(bytes);
         } catch (IOException e) {
             e.printStackTrace();
             throw new ConverterException("write error", e);
@@ -68,36 +70,36 @@ public class BinaryWriter implements  AutoCloseable {
         writeLong(value.getLeastSignificantBits());
     }
 
-    public void writeBytesSection(byte[] bytes){
-        if(bytes==null){
+    public void writeBytesSection(byte[] bytes) {
+        if (bytes == null) {
             writeInt(-1);
-        }else{
+        } else {
             writeInt(bytes.length);
             writeBytes(bytes);
         }
     }
 
-    public void writeStringSection(String s){
+    public void writeStringSection(String s) {
         try {
-            writeBytesSection(s==null?null:s.getBytes("utf8"));
+            writeBytesSection(s == null ? null : s.getBytes("utf8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            throw  new ConverterException(e);
+            throw new ConverterException(e);
         }
     }
 
-    public void flush(){
+    public void flush() {
         try {
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
-            throw  new ConverterException("flush error",e);
+            throw new ConverterException("flush error", e);
         }
     }
 
     @Override
     public void close() throws Exception {
-        if(!leaveOpen){
+        if (!leaveOpen) {
             out.close();
         }
     }

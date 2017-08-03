@@ -5,18 +5,18 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
-public class BinaryReader implements  AutoCloseable {
+public class BinaryReader implements AutoCloseable {
 
     InputStream in;
     boolean leaveOpen;
 
-    public BinaryReader(InputStream in,boolean leaveOpen) {
+    public BinaryReader(InputStream in, boolean leaveOpen) {
         this.in = in;
-        this.leaveOpen=leaveOpen;
+        this.leaveOpen = leaveOpen;
     }
 
     public BinaryReader(InputStream in) {
-        this(in,false);
+        this(in, false);
     }
 
     public short readShort() {
@@ -25,7 +25,7 @@ public class BinaryReader implements  AutoCloseable {
         short value = 0;
 
         for (int i = 0; i < 2; i++) {
-            value |= ((short)(bytes[i] & 0xFF)) << (8 * i);
+            value |= ((short) (bytes[i] & 0xFF)) << (8 * i);
         }
 
         return value;
@@ -49,7 +49,7 @@ public class BinaryReader implements  AutoCloseable {
         long value = 0;
 
         for (int i = 0; i < 8; i++) {
-            value |= ((long)(bytes[i] & 0xFF)) << (8 * i);
+            value |= ((long) (bytes[i] & 0xFF)) << (8 * i);
         }
 
         return value;
@@ -60,8 +60,7 @@ public class BinaryReader implements  AutoCloseable {
         return bytes[0];
     }
 
-    public float readFloat()
-    {
+    public float readFloat() {
         return Float.intBitsToFloat(readInt());
     }
 
@@ -73,10 +72,10 @@ public class BinaryReader implements  AutoCloseable {
         byte[] bytes = new byte[count];
         int offset = 0;
         try {
-            while (offset<count) {
-                int n = in.read(bytes, offset, count);
-                if(n<=0)throw  new ConverterException("read error");
-                offset+=n;
+            while (offset < count) {
+                int n = in.read(bytes, offset, count-offset);
+                if (n <= 0) throw new ConverterException("read error eof");
+                offset += n;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,12 +84,12 @@ public class BinaryReader implements  AutoCloseable {
         return bytes;
     }
 
-    void reverse(byte[] bytes,int start,int n){
+    void reverse(byte[] bytes, int start, int n) {
 
-        for (int l=start, r=start+n-1;l<r;l++,r--){
-            byte b= bytes[l];
-            bytes[l]=bytes[r];
-            bytes[r]=b;
+        for (int l = start, r = start + n - 1; l < r; l++, r--) {
+            byte b = bytes[l];
+            bytes[l] = bytes[r];
+            bytes[r] = b;
         }
     }
 
@@ -100,49 +99,49 @@ public class BinaryReader implements  AutoCloseable {
 
         assert bytes.length == 16 : "data must be 16 bytes in length";
 
-        reverse(bytes,0,4);
-        reverse(bytes,4,2);
-        reverse(bytes,6,2);
+        reverse(bytes, 0, 4);
+        reverse(bytes, 4, 2);
+        reverse(bytes, 6, 2);
 
         long msb = 0;
         long lsb = 0;
 
-        for (int i=0; i<8; i++)
+        for (int i = 0; i < 8; i++)
             msb = (msb << 8) | (bytes[i] & 0xff);
 
-        for (int i=8; i<16; i++)
+        for (int i = 8; i < 16; i++)
             lsb = (lsb << 8) | (bytes[i] & 0xff);
 
-        return new UUID(msb,lsb);
+        return new UUID(msb, lsb);
 
         //return new UUID(readLong(),readLong());
     }
 
-    public byte[] readBytesSection(){
+    public byte[] readBytesSection() {
         int n = readInt();
-        if(n==-1){
+        if (n == -1) {
             return null;
-        }else{
+        } else {
             return readBytes(n);
         }
     }
 
 
-    public String readStringSection(){
+    public String readStringSection() {
         byte[] bytes = readBytesSection();
-        if(bytes==null)return null;
+        if (bytes == null) return null;
 
         try {
-            return new String(bytes,"utf8");
+            return new String(bytes, "utf8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            throw  new ConverterException(e);
+            throw new ConverterException(e);
         }
     }
 
     @Override
     public void close() throws Exception {
-        if(!leaveOpen){
+        if (!leaveOpen) {
             in.close();
         }
     }
