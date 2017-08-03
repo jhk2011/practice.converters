@@ -1,18 +1,17 @@
-package practice.converters;
+package practice.converters.converters;
 
-import java.io.*;
+import practice.converters.*;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
-class ObjectConverter extends Converter<Object> {
+public class ObjectConverter extends Converter<Object> {
 
     @Override
     public boolean canConvert(Class c) {
-
-        System.out.println(c.getName());
 
         if (c.isPrimitive()) return false;
         if (c.isAnnotation()) return false;
@@ -54,8 +53,6 @@ class ObjectConverter extends Converter<Object> {
             String name = method.getName();
 
             Class cls = method.getReturnType();
-
-            System.out.println(cls.getName());
 
             name = name.substring(3, name.length());
 
@@ -109,11 +106,22 @@ class ObjectConverter extends Converter<Object> {
         for (int i = 0; i < count; i++) {
 
             String name = reader.readStringSection();
+
+            System.out.println("set type " + c.getName() +" property "+name);
+
             Object value = convert.read(reader);
 
             for (Method method : setters) {
 
                 if (method.getName().equals("set" + name)) {
+
+
+                    Class type = method.getParameterTypes()[0];
+
+                    if(value!=null&&!type.isInstance(value)){
+                        value = convert.getTypeConvert().convert(type,value);
+                    }
+
                     setValue(method, obj, value);
                 }
             }
@@ -126,6 +134,7 @@ class ObjectConverter extends Converter<Object> {
 
     private void setValue(Method method, Object obj, Object value) {
         try {
+
             method.invoke(obj, value);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
@@ -142,10 +151,10 @@ class ObjectConverter extends Converter<Object> {
             return obj;
         } catch (InstantiationException e) {
             e.printStackTrace();
-            throw new ConverterException("can not set property", e);
+            throw new ConverterException("can not create object", e);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-            throw new ConverterException("can not set property", e);
+            throw new ConverterException("can not create object", e);
         }
     }
 }

@@ -1,12 +1,18 @@
-package practice.converters;
+package practice.converters.converters;
+
+import practice.converters.BinaryReader;
+import practice.converters.BinaryWriter;
+import practice.converters.Convert;
+import practice.converters.Converter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListConverter extends  Converter<List> {
+public class ListConverter extends Converter<List> {
+
     @Override
     public boolean canConvert(Class c) {
-        return c==List.class;
+        return  c==List.class || c == ArrayList.class;
     }
 
     @Override
@@ -25,7 +31,7 @@ public class ListConverter extends  Converter<List> {
         List obj = new ArrayList(size);
         for (int i = 0; i < size; i++) {
             Object item = convert.read(reader);
-            obj.set(i,item);
+            obj.add(i,item);
         }
         return obj;
     }

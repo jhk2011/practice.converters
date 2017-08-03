@@ -2,7 +2,7 @@ package practice.converters;
 
 import java.io.*;
 
-abstract class Converter<T> {
+public abstract class Converter<T> {
 
     public abstract boolean canConvert(Class c);
 
@@ -23,6 +23,9 @@ abstract class Converter<T> {
     protected byte[] getBytes(T obj, Class c, Convert convert) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         BinaryWriter writer = new BinaryWriter(out);
+
+        System.out.println("write object:"+c.getName());
+
         writeObject(writer, obj, c, convert);
         writer.flush();
         return out.toByteArray();
@@ -47,6 +50,9 @@ abstract class Converter<T> {
     protected T getValue(byte[] bytes, Class c, Convert convert) {
         ByteArrayInputStream in = new ByteArrayInputStream(bytes);
         BinaryReader reader = new BinaryReader(in);
+
+        System.out.println("read object:"+c.getName());
+
         return readObject(reader, c, convert);
     }
 

@@ -1,6 +1,6 @@
 package practice.converters;
 
-class ConverterException extends RuntimeException{
+public class ConverterException extends RuntimeException{
     public  ConverterException(){
 
     }

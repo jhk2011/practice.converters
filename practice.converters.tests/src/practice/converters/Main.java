@@ -1,12 +1,9 @@
 package practice.converters;
 
-import com.sun.corba.se.spi.activation.LocatorPackage.ServerLocationPerORB;
-import practice.converters.typemaps.SimpleTypeMap;
+import practice.converters.typemaps.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Main {
 
@@ -48,20 +45,20 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-
         //test();
         //testgereric();
 
-        TypeIdTypeResolver resover = new TypeIdTypeResolver();
 
-        resover.addPrimitive();
-        resover.add(Object.class,88);
-        resover.add(Person.class,100);
-        resover.add(List.class,500);
-        resover.add(int[].class,600);
-        resover.add(Gender.class,700);
-        //resover.add(int[][].class,601);
-        //resover.add(Object.class,101);
+        Date date =new Date(System.currentTimeMillis());
+
+        Calendar.getInstance().getTimeInMillis();
+
+        System.out.println(date);
+
+        Calendar calendar = Calendar.getInstance();
+
+        date= calendar.getTime();
+
 
         TypeNameTypeResolver typeNameResolver = new TypeNameTypeResolver();
 
@@ -97,7 +94,11 @@ public class Main {
         list.add("list-item1");
 
         p.setList(list);
+
+        p.setDate(new Date());
         p.setGuid(UUID.randomUUID());
+
+        p.setIntegers(new Integer[]{1,2,3});
 
         Object obj = null;
 
@@ -113,15 +114,24 @@ public class Main {
 
         System.out.println("---");
 
-        FileInputStream in = new FileInputStream("f:/person.dat");
+        FileInputStream in = new FileInputStream("f:/personj.dat");
 
         Object obj2 = convert.read(in);
 
         System.out.println(obj2.getClass().getName());
 
-       System.out.println(((Person)obj2).getGuid());
+        Person person2 = (Person)obj2;
+
+        System.out.println(person2.getGuid());
+        System.out.println(person2.getDate());
 
         in.close();
+
+        Integer i = null;
+
+        int ii=i;
+
+        System.out.println(ii);
     }
 }
 

@@ -1,10 +1,15 @@
-package practice.converters;
+package practice.converters.converters;
+
+import practice.converters.Converter;
+import practice.converters.ConverterException;
+import practice.converters.Convert;
 
 import java.io.UnsupportedEncodingException;
 
-class StringConverter extends  Converter<String>{
+public class StringConverter extends Converter<String> {
     @Override
     public boolean canConvert(Class c) {
+
         return c==String.class;
     }
 
@@ -14,8 +19,9 @@ class StringConverter extends  Converter<String>{
             return obj.getBytes("utf8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            throw new ConverterException("encoding dost not support",e);
         }
-        throw new ConverterException();
+
     }
 
     @Override
@@ -24,7 +30,7 @@ class StringConverter extends  Converter<String>{
             return new String(bytes,"utf8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            throw new ConverterException("encoding dost not support",e);
         }
-        throw new ConverterException();
     }
 }

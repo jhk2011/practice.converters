@@ -19,13 +19,13 @@ public class BinaryReader implements  AutoCloseable {
         this(in,false);
     }
 
-    public int readShort() {
+    public short readShort() {
         byte[] bytes = readBytes(2);
 
-        int value = 0;
+        short value = 0;
 
         for (int i = 0; i < 2; i++) {
-            bytes[i] = (byte) (value << 8 * i & 0xFF);
+            value |= ((short)(bytes[i] & 0xFF)) << (8 * i);
         }
 
         return value;
@@ -37,19 +37,19 @@ public class BinaryReader implements  AutoCloseable {
         int value = 0;
 
         for (int i = 0; i < 4; i++) {
-            value |= bytes[i] << 8 * i & 0xFF;
+            value |= (bytes[i] & 0xFF) << (8 * i);
         }
 
         return value;
     }
 
-    public int readLong() {
+    public long readLong() {
         byte[] bytes = readBytes(8);
 
-        int value = 0;
+        long value = 0;
 
         for (int i = 0; i < 8; i++) {
-            bytes[i] = (byte) (value << 8 * i & 0xFF);
+            value |= ((long)(bytes[i] & 0xFF)) << (8 * i);
         }
 
         return value;
@@ -60,7 +60,8 @@ public class BinaryReader implements  AutoCloseable {
         return bytes[0];
     }
 
-    public float readFloat() {
+    public float readFloat()
+    {
         return Float.intBitsToFloat(readInt());
     }
 
@@ -68,10 +69,15 @@ public class BinaryReader implements  AutoCloseable {
         return Double.longBitsToDouble(readLong());
     }
 
-    public byte[] readBytes(int n) {
-        byte[] bytes = new byte[n];
+    public byte[] readBytes(int count) {
+        byte[] bytes = new byte[count];
+        int offset = 0;
         try {
-            in.read(bytes, 0, n);
+            while (offset<count) {
+                int n = in.read(bytes, offset, count);
+                if(n<=0)throw  new ConverterException("read error");
+                offset+=n;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             throw new ConverterException("read error", e);
@@ -79,9 +85,37 @@ public class BinaryReader implements  AutoCloseable {
         return bytes;
     }
 
+    void reverse(byte[] bytes,int start,int n){
+
+        for (int l=start, r=start+n-1;l<r;l++,r--){
+            byte b= bytes[l];
+            bytes[l]=bytes[r];
+            bytes[r]=b;
+        }
+    }
+
     public UUID readUUID() {
+
         byte[] bytes = readBytes(16);
-        return new UUID(readLong(), readLong());
+
+        assert bytes.length == 16 : "data must be 16 bytes in length";
+
+        reverse(bytes,0,4);
+        reverse(bytes,4,2);
+        reverse(bytes,6,2);
+
+        long msb = 0;
+        long lsb = 0;
+
+        for (int i=0; i<8; i++)
+            msb = (msb << 8) | (bytes[i] & 0xff);
+
+        for (int i=8; i<16; i++)
+            lsb = (lsb << 8) | (bytes[i] & 0xff);
+
+        return new UUID(msb,lsb);
+
+        //return new UUID(readLong(),readLong());
     }
 
     public byte[] readBytesSection(){

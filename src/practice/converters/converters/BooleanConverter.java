@@ -1,4 +1,7 @@
-package practice.converters;
+package practice.converters.converters;
+
+import practice.converters.Convert;
+import practice.converters.Converter;
 
 public class BooleanConverter extends Converter<Boolean> {
     @Override

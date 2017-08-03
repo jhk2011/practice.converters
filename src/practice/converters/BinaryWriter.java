@@ -1,8 +1,6 @@
 package practice.converters;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.UUID;
 
 public class BinaryWriter implements  AutoCloseable {
@@ -20,8 +18,9 @@ public class BinaryWriter implements  AutoCloseable {
     }
 
     public void writeBytes(byte[] bytes) {
+
         try {
-            out.write(bytes);
+             out.write(bytes);
         } catch (IOException e) {
             e.printStackTrace();
             throw new ConverterException("write error", e);
